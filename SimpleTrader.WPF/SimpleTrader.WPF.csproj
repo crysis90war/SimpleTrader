@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleTrader.API\SimpleTrader.API.csproj" />
-    <ProjectReference Include="..\SImpleTrader.Domain\SImpleTrader.Domain.csproj" />
+    <ProjectReference Include="..\SImpleTrader.Domain\SimpleTrader.Domain.csproj" />
     <ProjectReference Include="..\SimpleTrader.EF\SimpleTrader.EF.csproj" />
   </ItemGroup>
 

@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SimpleTrader.EF.Services.Common;
 using SimpleTrader.Domain.Models;
 using SimpleTrader.Domain.Services;
+using SimpleTrader.EF.Services.Common;
 
 namespace SimpleTrader.EF.Services
 {
-    public class AccountDataService : IDataService<Account>
+    public class AccountDataService : IAccountService
     {
         private readonly ApplicationDbContextFactory _contextFactory;
         private readonly NonQueryDataService<Account> _nonQueryDataService;
@@ -31,6 +31,7 @@ namespace SimpleTrader.EF.Services
             using (ApplicationDbContext context = _contextFactory.CreateDbContext())
             {
                 Account entity = await context.Accounts
+                    .Include(a => a.AccountHolder)
                     .Include(a => a.AssetTransactions)
                     .FirstOrDefaultAsync((a) => a.Id == key);
 
@@ -42,12 +43,34 @@ namespace SimpleTrader.EF.Services
         {
             using (ApplicationDbContext context = _contextFactory.CreateDbContext())
             {
-                IEnumerable<Account> entities = await context
-                    .Accounts
+                IEnumerable<Account> entities = await context.Accounts
+                    .Include(a => a.AccountHolder)
                     .Include(a => a.AssetTransactions)
                     .ToListAsync();
 
                 return entities;
+            }
+        }
+
+        public async Task<Account> GetByEmail(string email)
+        {
+            using (ApplicationDbContext context = _contextFactory.CreateDbContext())
+            {
+                return await context.Accounts
+                    .Include(a => a.AccountHolder)
+                    .Include(a => a.AssetTransactions)
+                    .FirstOrDefaultAsync(a => a.AccountHolder.Email == email);
+            }
+        }
+
+        public async Task<Account> GetByUsername(string username)
+        {
+            using (ApplicationDbContext context = _contextFactory.CreateDbContext())
+            {
+                return await context.Accounts
+                    .Include(a => a.AccountHolder)
+                    .Include(a => a.AssetTransactions)
+                    .FirstOrDefaultAsync(a => a.AccountHolder.Username == username);
             }
         }
 
