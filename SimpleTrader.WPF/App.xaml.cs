@@ -14,6 +14,7 @@ using System.Configuration;
 using System.Windows;
 using SimpleTrader.Domain.Services.AuthenticationServices;
 using Microsoft.AspNet.Identity;
+using SimpleTrader.WPF.State.Authenticators;
 
 namespace SimpleTrader.WPF
 {
@@ -65,7 +66,11 @@ namespace SimpleTrader.WPF
 
             services.AddSingleton<ISimpleTraderViewModelFactory<MajorIndexListingViewModel>, MajorIndexListingViewModelFactory>();
 
+            services.AddSingleton<ISimpleTraderViewModelFactory<LoginViewModel>, LoginViewModelFactory>();
+
             services.AddScoped<INavigator, Navigator>();
+
+            services.AddScoped<IAuthenticator, Authenticator>();
 
             services.AddScoped<MainViewModel>();
 
