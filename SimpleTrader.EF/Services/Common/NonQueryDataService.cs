@@ -23,23 +23,23 @@ namespace SimpleTrader.EF.Services.Common
             }
         }
 
+        public async Task<TEntity> Update(int key, TEntity entity)
+        {
+            using (ApplicationDbContext context = _contextFactory.CreateDbContext())
+            {
+                entity.Id = key;
+                context.Set<TEntity>().Update(entity);
+                await context.SaveChangesAsync();
+                return entity;
+            }
+        }
+
         public async Task<bool> Delete(int key)
         {
             using (ApplicationDbContext context = _contextFactory.CreateDbContext())
             {
                 TEntity entity = await context.Set<TEntity>().FirstOrDefaultAsync((e) => e.Id.GetType() == key.GetType());
                 return await context.SaveChangesAsync() > 0;
-            }
-        }
-
-        public async Task<TEntity> Update(int key, TEntity entity)
-        {
-            using (ApplicationDbContext context = _contextFactory.CreateDbContext())
-            {
-                entity.Id = key;
-                context.Set<TEntity>().Add(entity);
-                await context.SaveChangesAsync();
-                return entity;
             }
         }
     }

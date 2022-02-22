@@ -1,7 +1,9 @@
-﻿namespace SimpleTrader.WPF.ViewModels.Factories
+﻿using SimpleTrader.WPF.State.Navigators;
+
+namespace SimpleTrader.WPF.ViewModels.Factories
 {
-    public interface ISimpleTraderViewModelFactory<TViewModel> where TViewModel : ViewModelBase
+    public interface ISimpleTraderViewModelFactory
     {
-        TViewModel CreateViewModel();
+        ViewModelBase CreateViewModel(ViewType viewType);
     }
 }

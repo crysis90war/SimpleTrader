@@ -1,12 +1,9 @@
-﻿using SimpleTrader.WPF.Commands;
-using SimpleTrader.WPF.Models;
-using SimpleTrader.WPF.ViewModels;
-using SimpleTrader.WPF.ViewModels.Factories;
-using System.Windows.Input;
+﻿using SimpleTrader.WPF.ViewModels;
+using System;
 
 namespace SimpleTrader.WPF.State.Navigators
 {
-    public class Navigator : ObservableObject, INavigator
+    public class Navigator : INavigator
     {
         private ViewModelBase _currentViewModel;
         public ViewModelBase CurrentViewModel
@@ -18,15 +15,10 @@ namespace SimpleTrader.WPF.State.Navigators
             set
             {
                 _currentViewModel = value;
-                OnPropertyChanged(nameof(CurrentViewModel));
+                StateChanged?.Invoke();
             }
         }
 
-        public ICommand UpdateCurrentViewModelCommand { get; set; }
-
-        public Navigator(IRootSimpleTraderViewModelFactory viewModelFactory)
-        {
-            UpdateCurrentViewModelCommand = new UpdateCurrentViewModelCommand(this, viewModelFactory);
-        }
+        public event Action StateChanged;
     }
 }

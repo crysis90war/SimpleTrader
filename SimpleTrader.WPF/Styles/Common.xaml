@@ -8,13 +8,13 @@
     <SolidColorBrush x:Key="BrushPrimary1" Color="{StaticResource ColorPrimary1}"/>
     <SolidColorBrush x:Key="BrushPrimary2" Color="{StaticResource ColorPrimary2}"/>
     
-    <!-- Text Boxes -->
-    <Style TargetType="TextBox">
+    <!-- Shared Style -->
+    <Style x:Key="TextBoxCase" TargetType="Control">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Padding" Value="10 5"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="TextBox">
+                <ControlTemplate TargetType="Control">
                     <Border BorderThickness="1" BorderBrush="Gray" CornerRadius="3">
                         <ScrollViewer x:Name="PART_ContentHost"/>
                     </Border>
@@ -22,6 +22,12 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!-- Text Boxes -->
+    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxCase}"/>
+
+    <!-- Password Box -->
+    <Style TargetType="PasswordBox" BasedOn="{StaticResource TextBoxCase}"/>
 
     <!-- Buttons -->
     <Style TargetType="Button">

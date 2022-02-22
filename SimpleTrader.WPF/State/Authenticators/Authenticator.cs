@@ -1,9 +1,8 @@
 ﻿using SimpleTrader.Domain.Models;
 using SimpleTrader.Domain.Services.AuthenticationServices;
+using SimpleTrader.WPF.Models;
+using SimpleTrader.WPF.State.Accounts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleTrader.WPF.State.Authenticators
@@ -11,14 +10,29 @@ namespace SimpleTrader.WPF.State.Authenticators
     public class Authenticator : IAuthenticator
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IAccountStore _accountStore;
 
-        public Account CurrentAccount { get; private set; }
+        public event Action StateChanged;
+
+        public Account CurrentAccount
+        {
+            get
+            {
+                return _accountStore.CurrentAccount;
+            }
+            private set
+            {
+                _accountStore.CurrentAccount = value;
+                StateChanged?.Invoke();
+            }
+        }
 
         public bool IsLoggedIn => CurrentAccount != null;
 
-        public Authenticator(IAuthenticationService authenticationService)
+        public Authenticator(IAuthenticationService authenticationService, IAccountStore accountStore)
         {
             _authenticationService = authenticationService;
+            _accountStore = accountStore;
         }
 
         public async Task<bool> Login(string username, string password)
