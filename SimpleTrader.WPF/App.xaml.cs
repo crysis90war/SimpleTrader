@@ -16,6 +16,7 @@ using SimpleTrader.Domain.Services.AuthenticationServices;
 using Microsoft.AspNet.Identity;
 using SimpleTrader.WPF.State.Authenticators;
 using SimpleTrader.WPF.State.Accounts;
+using SimpleTrader.WPF.State.Assets;
 
 namespace SimpleTrader.WPF
 {
@@ -24,49 +25,35 @@ namespace SimpleTrader.WPF
     /// </summary>
     public partial class App : Application
     {
-        protected override async void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
             IServiceProvider serviceProvider = CreateServiceProvider();
-
             Window window = serviceProvider.GetRequiredService<MainWindow>();
-
-
-            IAuthenticationService authenticationService = serviceProvider.GetRequiredService<IAuthenticationService>();
-
+            //IAuthenticationService authenticationService = serviceProvider.GetRequiredService<IAuthenticationService>();
             //var account = await authenticationService.Register("samadh90@icloud.com", "crysis90war", "samadh90", "samadh90");
-
             window.Show();
-
             base.OnStartup(e);
         }
 
         private IServiceProvider CreateServiceProvider()
         {
-            IServiceCollection services = new ServiceCollection();
-
             string api = ConfigurationManager.AppSettings.Get("financeApiKey");
-
+            IServiceCollection services = new ServiceCollection();
+            
             services.AddSingleton(new FinancialModelingPropHttpClientFactory(api));
-
             services.AddSingleton<ApplicationDbContextFactory>();
-
             services.AddSingleton<IDataService<Account>, AccountDataService>();
-
             services.AddSingleton<IAccountService, AccountDataService>();
-
             services.AddSingleton<IAuthenticationService, AuthenticationService>();
-
             services.AddSingleton<IStockPriceService, StockPriceService>();
-
             services.AddSingleton<IBuyStockService, BuyStockService>();
-
             services.AddSingleton<IMajorIndexService, MajorIndexService>();
-
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-
             services.AddSingleton<ISimpleTraderViewModelFactory, SimpleTraderViewModelFactory>();
 
+            services.AddSingleton<AssetSummaryViewModel>();
             services.AddSingleton<HomeViewModel>(services => new HomeViewModel(
+                services.GetRequiredService<AssetSummaryViewModel>(),
                 MajorIndexListingViewModel.LoadMajorIndexViewModel(
                     services.GetRequiredService<IMajorIndexService>())));
 
@@ -76,21 +63,18 @@ namespace SimpleTrader.WPF
             });
 
             services.AddSingleton<BuyViewModel>();
-
             services.AddSingleton<CreateViewModel<BuyViewModel>>(services =>
             {
                 return () => services.GetRequiredService<BuyViewModel>();
             });
 
             services.AddSingleton<PortfolioViewModel>();
-
             services.AddSingleton<CreateViewModel<PortfolioViewModel>>(services =>
             {
                 return () => services.GetRequiredService<PortfolioViewModel>();
             });
 
             services.AddSingleton<ViewModelDelegateRenavigator<HomeViewModel>>();
-
             services.AddSingleton<CreateViewModel<LoginViewModel>>(services =>
             {
                 return () => new LoginViewModel(
@@ -99,15 +83,11 @@ namespace SimpleTrader.WPF
             });
 
             services.AddSingleton<INavigator, Navigator>();
-
             services.AddSingleton<IAuthenticator, Authenticator>();
-
             services.AddSingleton<IAccountStore, AccountStore>();
-
+            services.AddSingleton<AssetStore>();
             services.AddSingleton<MainViewModel>();
-
             services.AddSingleton<BuyViewModel>();
-
             services.AddSingleton(s => new MainWindow(s.GetRequiredService<MainViewModel>()));
 
             return services.BuildServiceProvider();

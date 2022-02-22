@@ -2,7 +2,6 @@
 using SimpleTrader.WPF.State.Authenticators;
 using SimpleTrader.WPF.State.Navigators;
 using SimpleTrader.WPF.ViewModels.Factories;
-using System;
 using System.Windows.Input;
 
 namespace SimpleTrader.WPF.ViewModels
