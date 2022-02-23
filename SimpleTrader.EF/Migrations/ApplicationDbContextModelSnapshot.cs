@@ -40,7 +40,7 @@ namespace SimpleTrader.EF.Migrations
 
                     b.HasIndex("AccountHolderId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("SimpleTrader.Domain.Models.AssetTransaction", b =>
@@ -67,7 +67,7 @@ namespace SimpleTrader.EF.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("AssetTransactions");
+                    b.ToTable("AssetTransactions", (string)null);
                 });
 
             modelBuilder.Entity("SimpleTrader.Domain.Models.User", b =>
@@ -98,7 +98,7 @@ namespace SimpleTrader.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SimpleTrader.Domain.Models.Account", b =>
@@ -116,7 +116,7 @@ namespace SimpleTrader.EF.Migrations
                         .WithMany("AssetTransactions")
                         .HasForeignKey("AccountId");
 
-                    b.OwnsOne("SimpleTrader.Domain.Models.Asset", "Asset", b1 =>
+                    b.OwnsOne("SimpleTrader.Domain.Models.AssetTransaction.Asset#SimpleTrader.Domain.Models.Asset", "Asset", b1 =>
                         {
                             b1.Property<int>("AssetTransactionId")
                                 .HasColumnType("int");
@@ -129,7 +129,7 @@ namespace SimpleTrader.EF.Migrations
 
                             b1.HasKey("AssetTransactionId");
 
-                            b1.ToTable("AssetTransactions");
+                            b1.ToTable("AssetTransactions", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("AssetTransactionId");

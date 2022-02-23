@@ -3,12 +3,19 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace SimpleTrader.EF
 {
-    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+    public class ApplicationDbContextFactory
     {
-        public ApplicationDbContext CreateDbContext(string[] args = null)
+        private readonly string _connectionString;
+
+        public ApplicationDbContextFactory(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        public ApplicationDbContext CreateDbContext()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>();
-            options.UseSqlServer("Data Source=ACER-SAMAD;Initial Catalog=SimpleTraderDb;Integrated Security=True;");
+            options.UseSqlServer(_connectionString);
             return new ApplicationDbContext(options.Options);
         }
     }
