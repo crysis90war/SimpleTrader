@@ -1,19 +1,17 @@
-﻿using SimpleTrader.WPF.State.Authenticators;
+﻿using SimpleTrader.Domain.Exceptions;
+using SimpleTrader.WPF.State.Authenticators;
 using SimpleTrader.WPF.State.Navigators;
 using SimpleTrader.WPF.ViewModels;
-using SimpleTrader.WPF.ViewModels.Factories;
 using System;
-using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace SimpleTrader.WPF.Commands
 {
-    public class LoginCommand : ICommand
+    public class LoginCommand : AsyncCommandBase
     {
         private readonly IAuthenticator _authenticator;
         private readonly IRenavigator _renavigator;
         private readonly LoginViewModel _loginViewModel;
-
-        public event EventHandler CanExecuteChanged;
 
         public LoginCommand(LoginViewModel loginViewModel, IAuthenticator authenticator, IRenavigator renavigator)
         {
@@ -22,19 +20,26 @@ namespace SimpleTrader.WPF.Commands
             _loginViewModel = loginViewModel;
         }
 
-        public bool CanExecute(object parameter)
+        public override async Task ExecuteAsync(object parameter)
         {
-            return true;
-        }
+            _loginViewModel.ErrorMessage = string.Empty;
 
-        public async void Execute(object parameter)
-        {
-            bool success = await _authenticator.Login(_loginViewModel.Username, parameter.ToString());
-
-            if (success)
+            try
             {
+                await _authenticator.Login(_loginViewModel.Username, parameter.ToString());
                 _renavigator.Renavigate();
-                //_navigator.UpdateCurrentViewModelCommand.Execute(ViewType.Home);
+            }
+            catch (UserNotFoundException)
+            {
+                _loginViewModel.ErrorMessage = "Username or password does not exist.";
+            }
+            catch (InvalidPasswordException)
+            {
+                _loginViewModel.ErrorMessage = "Username or password does not exist.";
+            }
+            catch (Exception)
+            {
+                _loginViewModel.ErrorMessage = "Login failed.";
             }
         }
     }
